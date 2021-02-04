@@ -1,0 +1,191 @@
+getwd() - get the working directory
+read.csv("abc.csv")
+to change working directory, go to file-change dir-.........
+dir() - to see which all files i have in current directory
+
+create a new code in editor, save it in same folder.
+To load the code, use - source("name of the code.R")
+ls() - to check if the code is properly loaded into the working dir
+
+
+***********WEEK 2**********
+R has basic 5 atomic classes of objects:
+1) charecter 2) numeric(real numbers 3) integer 4) complex 5) Logical(true/false)
+
+The most basic object is vector - it can only contain objects of same class
+List - is a vecto but can contain different classes
+
+emopty vector can bve represented as vector()
+
+*** if i enter 1, it is considered as numeric input. entering 1L explicitly gives an integer.
+*** Inf is a considered as number. 
+*** NaN (not a number) can also be consideredas missing number 
+
+#########Vectors and lists#########
+the c() function can be used to create vectors of objects.
+x<-c(0.5, 0.6) ##numeric
+x<-c(TRUE, FALSE) ##logical 
+x<-c(T,F)  ## logical 
+x<-c("a", "b", "c",) ## charecter 
+x<-9:29 ## integer 
+x<-c(1+0i, 2+4i) ## complex
+
+x<-vector("numeric", length=10)
+
+
+###when 2 different objects are mixed, coercion occurs so that every element is same in the vector - this is implicit coercion
+-- EXPLICIT Corcion -- 
+ x<- 0:6
+class(x) - "integer"
+as.numeric(x) -  0 1 2 3 4 5 6
+as.logical(x) - F T T T T T T 
+as.charecter(x) - "0", "1", "2", ....."6"
+
+
+###### LISTS #############
+x<-list(1,"a", T, 1+6i)
+ 
+
+####### Matrices #########
+m<- matrix(nrow = 2, ncol = 3)
+dim(m) or attributes(m)
+
+Matrices are filled column wise. ex: m<- matrix(1:6, nrow = 2, ncol = 3)
+1 3 5
+2 4 6
+
+######## C-bind and R-bind ##########
+ x<- 1:3
+y<- 10:12
+
+cbind(x,y)
+1 10
+2 11
+3 12
+
+rbind(x,y)
+1 2 3
+10 11 12
+
+############### Factors ##########
+Used to represent categorical data, which can be ordered or unordered. one can think of a factor as an integer which as label.
+** Factors are treated specifically by modelling functions like lm() and glm().
+** using factors with labels is better than using integers because factors are self describing. having a variable that has values "male" and "female" is better than having variable that has vales 1 and 2.
+
+eg: x<-factor(c("yes", "yes", "no", "yes", "no"))
+x - yes yes no yes no 
+Levels: no yes
+
+table(x)
+no yes
+2 3
+
+unclass(x) - 2 2 1 2 1 
+
+attr(,"levels")- "no", "yes"
+
+## the order of the levels can be set inside the factor.
+x<-factor(c("yes", "yes", "no", "yes", "no"), levels=c("yes", "no))
+x - yes yes no yes no 
+Levels: yes no
+
+############## MIssing Values ############
+missing vales are denoted by NA or NAN for undefined mathematical operations.
+** is.na() is used to test objects if they are NA
+** is.nan() is used to test for nan
+** na values have class also, so there are integer na, character na, etc
+** A NaN value is also a NA but converse is not true.
+
+x<-c(1,2,NA, 10, 3)
+is.na(x)
+F F T F F
+is.nan(x)
+F F F F F
+
+x<-c(1,2,NAN, NA, 3)
+is.na(x)
+F F T T F
+is.nan(x)
+F F T F F
+
+######################## DATA FRAMES #################
+** they are represented as special type of list where every element of the list has to have the same lenght.
+** each element of the list can be thought of as a column and the lenghth of each element of the list is number of rows. 
+** unlike matrix, dataframes can store different classes of objects in each column (like lists). Matrix must have all elements to be of same class.
+** data frames also have a special attribute called row.names
+** DF are usually created by calling read.table() or read.csv()
+** can be converted to a matrix by calling data.matrix()
+
+x<-data.frame(foo=5:8, bar = c(T,T,T,F))
+x 
+ foo bar 
+1 5  True
+2 6  True
+3 7  True
+4 8  False
+
+nrow(x) - 4
+ncol(x) - 2
+
+################ NAMES #################
+x <- 1:3
+names(x)
+NULL 
+names(x) <- c("foo", "bar", "norf")
+x
+foo bar norf 
+1   2   3
+names(x)
+"foo", "bar", "norf"
+
+x<- list(a=1, b=2, c= 3)
+
+m<- matrix(1:4, nrow = 2, ncol = 2)
+dimnames(m)<- list(c("a", "b"), c("c", "d"))
+m 
+  c  d 
+a 1  3
+b 2  4
+
+######################## Reading data ############
+** read.table, read.csv for reading tabular data
+** readLines, for reading lines of a text files
+** source - for reading in R code file
+** dget for reading R code file(inverse of dput)
+** load for leading in saved workspaces
+** unserialize - for reading single R objects in binary form 
+ 
+######################## Writing data ##############
+** write.table, writeLines, dump, dput, save, serialize
+
+######################## READING Data files with read.table ###############
+the read.table function has following arguments:
+** file - the name of the file
+** header - logical indicating if the file has a header line
+** sep - a string indicating how the columsn are seperated
+** colClasses - a charecter vector indicating the classs of each column in the dataset
+** nrows - num of rows in dataset
+** comment.char - the character string indicating the comment character
+** skip - the number of lines to skip from the beginning
+** stringsAsFactors - should charecter variables be coded as factors?
+
+###################### Reading Large datasets ########################
+
+** Read the help page for read.table which contains many hints
+** make a rough calculation of the memory required to store ur dataset. If the dataset is larger than the amount of RAM on ur computer, stop working on it.
+** set comment.char = "" if there are no commented lines in ur file.
+
+** its good if i know the class of each column, then i can specify it in colClassess attribute. this makes the execution faster than normal. If i dont know the class of each column, quick way to get it is,
+initial<-read.table("datatable.txt", nrows=100)
+classes<-supply(initial,class)
+tabAll<-read.table("datatable.txt", colClasses = classes)
+
+** set nrows. This doesnt make R run faster, but it helps with memory usage. a mild overestimate is fine. you can use the unix tool wc to know the num of lines.
+
+########################### subsetting (extracting some elements fom the  
+
+
+
+
+ 
+
